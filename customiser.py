@@ -11,6 +11,7 @@ import platform
 import subprocess
 from shutil import copyfile, rmtree
 from time import sleep
+from os.path import expanduser
 
 # to smooth the update process
 enhancer_version = '0.7.0'
@@ -32,15 +33,13 @@ try:
     enhancer_folder = os.path.realpath(__dirname__)
     if 'microsoft' in platform.uname()[3].lower() and sys.platform == 'linux':
         filepath = '/mnt/c/' + \
-            subprocess.run(
-                ['cmd.exe', '/c', 'echo', '%localappdata%'], stdout=subprocess.PIPE).stdout \
-            .rstrip().decode('utf-8')[3:].replace('\\', '/') + '/Programs/Notion/resources'
+            expanduser('~') + '/Programs/Notion/resources'
         drive = enhancer_folder[5].capitalize() if enhancer_folder.startswith(
             '/mnt/') else 'C'
         enhancer_folder = drive + ':\\' + enhancer_folder[6:]
     elif sys.platform == 'win32':
-        filepath = subprocess.run(['echo', '%localappdata%'], shell=True, capture_output=True).stdout \
-            .rstrip().decode('utf-8') + '\\Programs\\Notion\\resources'
+        filepath = expanduser('~') + '\\AppData\\Local\\Programs\\Notion\\resources'
+        print(filepath)
     elif sys.platform == 'linux':
         if os.path.exists('/opt/notion-app'):
             filepath = '/opt/notion-app'
@@ -140,6 +139,8 @@ try:
             if '{ frame: false, show: false' not in content:
                 content = content.replace(
                     '{ show: false', '{ frame: false, show: false')
+                if 'frame: false,' not in content:
+                    content =re.sub(re.compile(r'\{(\s+)\.\.\.rect,(\s+)show: false,'), '{...rect, frame: false,show: false,', content)
             print(
                 f' ...adding "open hidden" capabilities to {os.path.join(filepath, "app", "main", "createWindow.js")}')
             content = re.sub('\\s*\\/\\* === INJECTION START === \\*\\/.*?\\/\\* === INJECTION END === \\*\\/\\s*',
