@@ -6,19 +6,6 @@
  */
 
 /* titlebar */
-.notion-topbar {
-  height: 55px !important;
-}
-.window-dragarea {
-  height: 10px;
-  width: 100%;
-}
-.notion-light-theme .window-dragarea {
-  background: #e6e6e6;
-}
-.notion-dark-theme .window-dragarea {
-  background: #272d2f;
-}
 .window-buttons-area {
   display: flex;
   align-items: center;
