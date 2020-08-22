@@ -10,6 +10,7 @@ import platform
 import subprocess
 from shutil import rmtree
 from time import sleep
+from os.path import expanduser
 
 # f'{bold}=== title ==={normal}'    = headers
 # '*'                               = information
@@ -25,12 +26,9 @@ try:
     filepath = ''
     if 'microsoft' in platform.uname()[3].lower() and sys.platform == 'linux':
         filepath = '/mnt/c/' + \
-            subprocess.run(
-                ['cmd.exe', '/c', 'echo', '%localappdata%'], stdout=subprocess.PIPE).stdout \
-            .rstrip().decode('utf-8')[3:].replace('\\', '/') + '/Programs/Notion/resources'
+            expanduser('~') + '/Programs/Notion/resources'
     elif sys.platform == 'win32':
-        filepath = subprocess.run(['echo', '%localappdata%'], shell=True, capture_output=True).stdout \
-            .rstrip().decode('utf-8') + '\\Programs\\Notion\\resources'
+        filepath = expanduser('~') + '\\AppData\\Local\\Programs\\Notion\\resources'
     elif sys.platform == 'linux':
         filepath = '/opt/notion-app' if os.path.exists(
             '/opt/notion-app') else '/opt/notion'
